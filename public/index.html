@@ -1,61 +1,87 @@
 <html>
-    <head>
+  <head> </head>
+  <body>
+    <div id="database"></div>
+    <form id="form">
+      <label for="fname">Nazwa:</label><br />
+      <input type="text" id="fname" name="fname" value="" /><br />
+      <label for="lname">Rodzaj:</label><br />
+      <input type="text" id="lname" name="lname" value="" /><br />
+      <label for="ilosc">Ilosc</label> <br />
+      <input type="number" id="ilosc" name="ilosc" value="" />
+      <br />
+      <input type="button" id="btn" value="Submit" />
+    </form>
 
-    </head>
-    <body>
-      test
-      <form action="/action_page.php">
-        <label for="fname">Model:</label><br>
-        <input type="text" id="fname" name="fname" value=""><br>
-        <label for="lname">Brand:</label><br>
-        <input type="text" id="lname" name="lname" value=""><br><br>
-        <input type="submit" value="Submit">
-      </form> 
-          
-          <script type="module">
-            // Import the functions you need from the SDKs you need
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-            // TODO: Add SDKs for Firebase products that you want to use
-            // https://firebase.google.com/docs/web/setup#available-libraries
-          
-            
-            // Firestore
-            import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js'
-            import { collection, getDocs, setDoc, doc, addDoc } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js'
-          
-             // Your web app's Firebase configuration
-             const firebaseConfig = {
-                apiKey: "AIzaSyCcLKArBrDedaED4OoL63VsOKRLhgTq0hM",
-                authDomain: "mobile1-727fc.firebaseapp.com",
-                projectId: "mobile1-727fc",
-                storageBucket: "mobile1-727fc.appspot.com",
-                messagingSenderId: "124985037668",
-                appId: "1:124985037668:web:2622e86e52bd91c4126071"
-              };
-            
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-              
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
 
-            // Initialize Cloud Firestore and get a reference to the service
-            const db = getFirestore(app);
+      // Firestore
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+      import {
+        collection,
+        getDocs,
+        setDoc,
+        doc,
+        addDoc,
+      } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
-            // Read data
-            const querySnapshot = await getDocs(collection(db, "cars"));
-           
-            querySnapshot.forEach((doc) => {
-                console.log(doc.data());
-                console.log(doc.data()['brand'],doc.data()['model']);
-                document.writeln(doc.data()['brand'],' ',doc.data()['model'],'<br>');
-            });
-            //adding doc
-            //await addDoc(collection(db, "cars"), {
-            //  model: "test model 2",
-            //  brand: "test brand 3"
-           // });
-           
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCcLKArBrDedaED4OoL63VsOKRLhgTq0hM",
+        authDomain: "mobile1-727fc.firebaseapp.com",
+        projectId: "mobile1-727fc",
+        storageBucket: "mobile1-727fc.appspot.com",
+        messagingSenderId: "124985037668",
+        appId: "1:124985037668:web:2622e86e52bd91c4126071",
+      };
 
-           
-        </script>
-    </body>
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+
+      // Initialize Cloud Firestore and get a reference to the service
+      const db = getFirestore(app);
+
+      // Read data
+      const querySnapshot = await getDocs(collection(db, "products"));
+
+      querySnapshot.forEach((doc) => {
+        var p = document.createElement("p");
+        p.innerText = `${doc.data()["nazwa"]} ${doc.data()["rodzaj"]} ${
+          doc.data()["ilosc"]
+        }`;
+        document.querySelector("#database").appendChild(p);
+      });
+
+      async function submit(event) {
+        const model = document.querySelector("#fname").value;
+        const brand = document.querySelector("#lname").value;
+        const ilosc = document.querySelector("#ilosc").value;
+
+        await addDoc(collection(db, "products"), {
+          nazwa: model,
+          rodzaj: brand,
+          ilosc: ilosc,
+        });
+
+        event.preventDefault();
+      }
+
+      const form = document.querySelector("#btn");
+
+      form.addEventListener("click", await submit);
+
+      // function writeUserData(model, brand) {
+
+      //   set(ref(db, "users/" + userId), {
+      //     username: name,
+      //     email: email,
+      //     profile_picture: imageUrl,
+      //   });
+      // }
+    </script>
+  </body>
 </html>
